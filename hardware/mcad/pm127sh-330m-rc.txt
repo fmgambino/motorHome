@@ -1,0 +1,13 @@
+﻿"Symbol";"Value";"Unit";
+"TraceParts.PartNumber";"10-18112016-083666";"";
+"REFERENCE";"PM127SH-330M-RC";"";
+"TraceParts.PartTitle";"Inductor SMD 33uH shielded 12,5x12,5mm";"";
+"TraceParts.InstanceId";"10-18112016-08366666DSLUCD4WYKK45MFN2QN50QY";"";
+"DESIGN";"Inductor SMD 33uH shielded 12,5x12,5mm";"";
+"TraceParts.PartStatus";"Published";"";
+"TraceParts.PartStatusId";"";"";
+"SUPPLIER";"BOURNS";"";
+"TraceParts.PartVersion";"1.0.0";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"TraceParts.PartLanguage";"en";"";
+"TraceParts.ClassPath";"BOURNS:/F_BOURNS/10-18112016-083666";"";

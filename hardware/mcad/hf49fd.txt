@@ -1,0 +1,14 @@
+﻿"Symbol";"Value";"Unit";
+"REFERENCE";"HF49FD";"";
+"TraceParts.PartVersion";"1.0.1";"";
+"SUPPLIER";"Xiamen Hongfa Electroacoustic Co.,Ltd.";"";
+"MASS";"About 3";"";
+"TraceParts.PartNumber";"90-26092019-023097";"";
+"TraceParts.PartLanguage";"en";"";
+"DESIGN";"Power Relay HF49FD";"";
+"TraceParts.InstanceId";"90-26092019-023097EY7I33NS15D7SF0QGW2FVWKS4";"";
+"TraceParts.PartTitle";"Power Relay HF49FD";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"TraceParts.PartStatusId";"";"";
+"TraceParts.ClassPath";"SHANGHAI_1128329244:90-26092019-023097";"";
+"TraceParts.PartStatus";"Published";"";

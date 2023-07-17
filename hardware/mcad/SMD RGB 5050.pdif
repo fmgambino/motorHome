@@ -1,0 +1,209 @@
+;Proteus Design Interchange Format
+
+(PDIF
+  (vendor "Labcenter Electronics")
+  (version 1 0)
+  (library
+    (part "SMDRGBHILIGHT6PL50W50H15MM"
+      (family "DIO")
+      (package "LED6SMD5050")
+      (description "304090049")
+      (attribute "PKG_TYPE" "LED6SMD5050")
+      (attribute "MPN" "5050RGB")
+      (gate
+        (swap 1)
+        (symbol "LEDRGB6P")
+        (pin "B+" 6 (type IO))
+        (pin "B-" 1 (type IO))
+        (pin "G+" 4 (type IO))
+        (pin "G-" 3 (type IO))
+        (pin "R+" 5 (type IO))
+        (pin "R-" 2 (type IO))
+      )
+    )
+    (symbol "LEDRGB6P"
+      (units THOU)
+      (graphic
+        (stroke 10.0)
+        (path (pt -300.0 150.0) (pt 300.0 150.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt 300.0 150.0) (pt 300.0 -150.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt 300.0 -150.0) (pt -300.0 -150.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt -300.0 -150.0) (pt -300.0 150.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt -75.0 100.0) (pt 50.0 0.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt 50.0 0.0) (pt -75.0 -100.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (path (pt -75.0 -100.0) (pt -75.0 100.0))
+      )
+      (graphic
+        (stroke 10.0)
+        (fill NONE)
+        (circle (pt -110.35 100) (pt -39.65 100))
+      )
+      (graphic
+        (stroke 10.0)
+        (fill NONE)
+        (circle (pt -110.35 -100) (pt -39.65 -100))
+      )
+      (graphic
+        (stroke 10.0)
+        (fill NONE)
+        (circle (pt 14.65 0) (pt 85.35 0))
+      )
+      (terminal
+        (body (symbol "PIN_R0_U_L200") (pt -500.0 -100.0) (rot 0) (mir 0) (visible true))
+        (name (pt 239.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+      )
+      (terminal
+        (body (symbol "PIN_R180_U_L200") (pt 500.0 -100.0) (rot 0) (mir 0) (visible true))
+        (name (pt -239.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+      )
+      (terminal
+        (body (symbol "PIN_R0_U_L200") (pt -500.0 100.0) (rot 0) (mir 0) (visible true))
+        (name (pt 239.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+      )
+      (terminal
+        (body (symbol "PIN_R180_U_L200") (pt 500.0 100.0) (rot 0) (mir 0) (visible true))
+        (name (pt -239.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+      )
+      (terminal
+        (body (symbol "PIN_R0_U_L200") (pt -500.0 0.0) (rot 0) (mir 0) (visible true))
+        (name (pt 239.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE LEFT) (visible true))
+      )
+      (terminal
+        (body (symbol "PIN_R180_U_L200") (pt 500.0 0.0) (rot 0) (mir 0) (visible true))
+        (name (pt -239.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+        (number (pt -39.37 0.0) (rot 0) (just MIDDLE RIGHT) (visible true))
+      )
+    )
+    (symbol "PIN_R0_U_L200"
+      (units THOU)
+      (graphic
+        (stroke 6.5)
+        (path (pt 0.0 0.0) (pt 200.0 0.0))
+      )
+    )
+    (symbol "PIN_R180_U_L200"
+      (units THOU)
+      (graphic
+        (stroke 6.5)
+        (path (pt 0.0 0.0) (pt -200.0 0.0))
+      )
+    )
+    (package "LED6SMD5050"
+      (units THOU)
+      (layer OCCA
+        (graphic
+          (stroke 1)
+          (path (pt -100.14 100) (pt 100 100) (pt 100 -100.14) (pt -100.14 -100.14) (pt -100.14 100) (closed))
+        )
+      )
+      (layer TASM
+        (graphic
+          (stroke 5.0)
+          (path (pt -98.43 -98.43) (pt -98.43 75.63))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -98.43 75.63) (pt -75.63 98.43))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 98.43 98.43) (pt 98.43 -98.43))
+        )
+      )
+      (layer TSLK
+        (graphic
+          (stroke 5.0)
+          (path (pt 98.43 -98.43) (pt -98.43 -98.43))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 98.43 98.43) (pt -87.29 98.43))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -87.29 98.43) (pt -98.43 87.29))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -98.43 87.29) (pt -98.43 78.74))
+        )
+        (graphic
+          (stroke 6)
+          (fill NONE)
+          (circle (pt -130 105) (pt -100 105))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -98.43 -78.74) (pt -98.43 -98.43))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 98.43 -78.74) (pt 98.43 -98.43))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 98.43 78.74) (pt 98.43 98.43))
+        )
+      )
+      (leg 1 (pt -90 60) (padstack 1))
+      (leg 2 (pt -90 0) (padstack 2))
+      (leg 3 (pt -90 -60) (padstack 3))
+      (leg 4 (pt 90 -60) (padstack 4))
+      (leg 5 (pt 90 0) (padstack 5))
+      (leg 6 (pt 90 60) (padstack 6))
+      (padstack 1
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+      (padstack 2
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+      (padstack 3
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+      (padstack 4
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+      (padstack 5
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+      (padstack 6
+        (pad (layer TCOP) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TRES) (rectf 30.0 60.0 0 14.99 179.99))
+        (pad (layer TPST) (rectf 30.0 60.0 0 14.99 179.99))
+      )
+    )
+  )
+)
