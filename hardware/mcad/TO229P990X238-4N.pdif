@@ -1,0 +1,121 @@
+;Proteus Design Interchange Format
+
+(PDIF
+  (vendor "Labcenter Electronics")
+  (version 1 0)
+  (library
+    (part "TO229P990X2384N"
+      (family "ANA")
+      (package "TO229P990X2384N")
+      (attribute "PKG_TYPE" "TO229P990X2384N")
+    )
+    (package "TO229P990X2384N"
+      (units THOU)
+      (layer TSLK
+        (graphic
+          (stroke 7.87)
+          (circle (pt -248.03 94.49) (pt -240.16 94.49))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 158.66 128.74) (pt -81.3 128.74))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -81.3 128.74) (pt -81.3 -128.74))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -81.3 -128.74) (pt 158.66 -128.74))
+        )
+      )
+      (layer OCCA
+        (graphic
+          (stroke 1.97)
+          (path (pt -228.74 138.58) (pt -228.74 -138.58))
+        )
+        (graphic
+          (stroke 1.97)
+          (path (pt -228.74 -138.58) (pt 228.74 -138.58))
+        )
+        (graphic
+          (stroke 1.97)
+          (path (pt 228.74 -138.58) (pt 228.74 138.58))
+        )
+        (graphic
+          (stroke 1.97)
+          (path (pt 228.74 138.58) (pt -228.74 138.58))
+        )
+      )
+      (layer TASM
+        (graphic
+          (stroke 7.87)
+          (circle (pt -248.03 94.49) (pt -240.16 94.49))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -81.3 128.74) (pt -81.3 -128.74))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt -81.3 -128.74) (pt 158.66 -128.74))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 158.66 -128.74) (pt 158.66 128.74))
+        )
+        (graphic
+          (stroke 5.0)
+          (path (pt 158.66 128.74) (pt -81.3 128.74))
+        )
+      )
+      (layer TPST
+        (graphic
+          (stroke 1)
+          (path (pt 73.03 89.76) (pt 124.61 89.76) (pt 124.61 21.26) (pt 73.03 21.26) (pt 73.03 89.76) (closed))
+        )
+        (graphic
+          (stroke 1)
+          (path (pt 73.03 -21.26) (pt 124.61 -21.26) (pt 124.61 -89.76) (pt 73.03 -89.76) (pt 73.03 -21.26) (closed))
+        )
+        (graphic
+          (stroke 1)
+          (path (pt -6.89 89.76) (pt 44.69 89.76) (pt 44.69 21.26) (pt -6.89 21.26) (pt -6.89 89.76) (closed))
+        )
+        (graphic
+          (stroke 1)
+          (path (pt 152.95 89.76) (pt 204.53 89.76) (pt 204.53 21.26) (pt 152.95 21.26) (pt 152.95 89.76) (closed))
+        )
+        (graphic
+          (stroke 1)
+          (path (pt 152.95 -21.26) (pt 204.53 -21.26) (pt 204.53 -89.76) (pt 152.95 -89.76) (pt 152.95 -21.26) (closed))
+        )
+        (graphic
+          (stroke 1)
+          (path (pt -6.89 -21.26) (pt 44.69 -21.26) (pt 44.69 -89.76) (pt -6.89 -89.76) (pt -6.89 -21.26) (closed))
+        )
+      )
+      (leg 1 (pt -162.99 90.16) (padstack 1))
+      (leg 3 (pt -162.99 -90.16) (padstack 2))
+      (leg 4 (pt 98.82 0) (padstack 3))
+      (padstack 1
+        (pad (layer TCOP) (rectf 38.19 111.42 0 0.0 0))
+        (pad (layer TRES) (rectf 38.19 111.42 0 0.0 0))
+        (pad (layer TPST) (rectf 38.19 111.42 0 0.0 0))
+      )
+      (padstack 2
+        (pad (layer TCOP) (rectf 38.19 111.42 0 0.0 0))
+        (pad (layer TRES) (rectf 38.19 111.42 0 0.0 0))
+        (pad (layer TPST) (rectf 38.19 111.42 0 0.0 0))
+      )
+      (padstack 3
+        (pad (layer TCOP) (rectf 221.65 239.76 0 0.0 0))
+        (pad (layer TRES) (rectf 221.65 239.76 0 0.0 0))
+      )
+      (model TO229P990X238-4N.step
+        (euler 0 0 0)
+        (offset 0 0 0)
+      )
+    )
+  )
+)

@@ -1,0 +1,13 @@
+﻿"Symbol";"Value";"Unit";
+"TraceParts.PartNumber";"10-22112012-049172";"";
+"REFERENCE";"20020302G051B01LF";"";
+"TraceParts.PartTitle";"Terminal Blocks Fixed SPRING, vertical wire-inlet, 5 mm pitch, 5 position";"";
+"TraceParts.InstanceId";"10-22112012-0491722R37E9ZU1K2SZH55FR5OIZLMW";"";
+"DESIGN";"Terminal Blocks Fixed SPRING, vertical wire-inlet, 5 mm pitch, 5 position";"";
+"TraceParts.PartStatus";"Published";"";
+"TraceParts.PartStatusId";"";"";
+"SUPPLIER";"FCI";"";
+"TraceParts.PartVersion";"1.0.3";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"TraceParts.PartLanguage";"en";"";
+"TraceParts.ClassPath";"FCI:10-22112012-049172";"";
