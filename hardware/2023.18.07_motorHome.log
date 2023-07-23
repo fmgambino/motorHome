@@ -1,4 +1,4 @@
-# Writing all output to: D:\01 FERNANDO GAMBINO\00 ELECTR??NICA GAMBINO\00 CLIENTES\motorHome\hardware\2023.18.07_motorHome.log
+# Writing all output to: D:\ElectronicaGambino\motorHome\hardware\2023.18.07_motorHome.log
 set pad_wire_necking on
 bus diagonal
 fanout 5
