@@ -1,41 +1,40 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <WORKSPACE>
- <FRAME activewindow="3">
+ <FRAME activewindow="1">
   <PLACEMENT>2c0000000000000001000000ffffffffffffffffffffffffffffffff12000000360000002f06000025040000</PLACEMENT>
   <WINDOW type="default" module="ISIS">
-   <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="312" flipped="0" gridminor="101600" gridmode="32" snapidx="0" snap="25400" xcursor="0" orgmode="0" snaprange="40705">
+   <editor metric="0" gridmajor="2540000" mode="00000010" zoom="-1" scale="118" flipped="0" gridminor="508000" gridmode="32" snapidx="0" snap="25400" xcursor="0" orgmode="0" snaprange="107627">
     <world y1="-26670000" x1="-40640000" y2="26670000" x2="40640000"/>
-    <centre x="762000" y="14706600"/>
+    <centre x="-3175000" y="24003000"/>
     <origin x="0" y="0"/>
    </editor>
   </WINDOW>
   <WINDOW type="default" module="ARES">
-   <editor metric="1" gridmajor="10000000" mode="00000002" zoom="-1" scale="96" flipped="0" gridminor="400000" gridmode="32" snapidx="0" snap="10000" xcursor="0" orgmode="0" snaprange="132291">
+   <editor metric="1" gridmajor="1000000" mode="00000000" zoom="-1" scale="1728" flipped="0" gridminor="20000" gridmode="32" snapidx="0" snap="10000" xcursor="0" orgmode="0" snaprange="7349">
     <world y1="-12700000" x1="-15240000" y2="12700000" x2="15240000"/>
-    <centre x="410000" y="1268050"/>
+    <centre x="-2460000" y="4940000"/>
     <origin x="0" y="0"/>
    </editor>
   </WINDOW>
   <WINDOW type="VIEW3D" module="VIEW3D">
    <camera>
-    <position x="5000" y="360000" z="13990180"/>
-    <focus x="5000" y="360000" z="0"/>
-    <up x="0" y="1000000" z="0"/>
+    <position x="-822382" y="1175608" z="13977877"/>
+    <focus x="-578256" y="1175570" z="-10181"/>
+    <up x="304" y="1000000" z="2"/>
    </camera>
   </WINDOW>
-  <WINDOW type="default" module="VSMDEBUG"/>
  </FRAME>
  <MODULE name="ARES">
-  <editor metric="1" gridmajor="10000000" mode="00000002" zoom="-1" scale="96" flipped="0" gridminor="400000" gridmode="32" snapidx="0" snap="10000" xcursor="0" orgmode="0" snaprange="132291">
+  <editor metric="1" gridmajor="1000000" mode="00000000" zoom="-1" scale="1728" flipped="0" gridminor="20000" gridmode="32" snapidx="0" snap="10000" xcursor="0" orgmode="0" snaprange="7349">
    <world y1="-12700000" x1="-15240000" y2="12700000" x2="15240000"/>
-   <centre x="410000" y="1268050"/>
+   <centre x="-2460000" y="4940000"/>
    <origin x="0" y="0"/>
   </editor>
  </MODULE>
  <MODULE name="ISIS">
-  <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="312" flipped="0" gridminor="101600" gridmode="32" snapidx="0" snap="25400" xcursor="0" orgmode="0" snaprange="40705">
+  <editor metric="0" gridmajor="2540000" mode="00000010" zoom="-1" scale="118" flipped="0" gridminor="508000" gridmode="32" snapidx="0" snap="25400" xcursor="0" orgmode="0" snaprange="107627">
    <world y1="-26670000" x1="-40640000" y2="26670000" x2="40640000"/>
-   <centre x="762000" y="14706600"/>
+   <centre x="-3175000" y="24003000"/>
    <origin x="0" y="0"/>
   </editor>
  </MODULE>
