@@ -1,238 +1,209 @@
-#include <Wire.h>
-#include <RTClib.h>
-#include <WiFi.h>
-#include <WiFiManager.h>
-#include <NTPClient.h>
-#include <WiFiUdp.h>
-#include <Adafruit_BMP280.h>
+#include <Arduino.h>
 #include <BluetoothSerial.h>
-#include <DallasTemperature.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <ArduinoJson.h>
 
-RTC_DS3231 rtc;
 BluetoothSerial SerialBT;
 
-// ENTRADAS ANALÓGICAS MOTOR HOME
-const int AI0 = 39;
-const int AI1 = 36;
-const int ds18b20Pin = 35;
+#define DHT_PIN 2      // Pin donde está conectado el sensor DHT22
+#define DHT_TYPE DHT22 // Tipo de sensor DHT22
+#define MAX_SENSORS 20
+DHT dht(DHT_PIN, DHT_TYPE);
 
-// ENTRADAS DIGITALES MOTOR HOME
-const int dht22Pin = 34;
-const int bmp280SDA = 21;
-const int bmp280SCL = 22;
-const int MQ2Pin = 16;
-const int ultaSonicoTRIG01 = 25;
-const int ultaSonicoECHO01 = 26;
-const int ultaSonicoTRIG02 = 27;
-const int ultaSonicoECHO02 = 14;
-const int ultaSonicoTRIG03 = 12;
-const int ultaSonicoECHO03 = 13;
+// JsonObject *obj[MAX_SENSORS];
+int objIndices[MAX_SENSORS];
+StaticJsonDocument<4096> doc;
+JsonArray data = doc.createNestedArray("data");
 
-// SALIDAS MOTOR HOME
-const int buzzer = 5;
-const int relay1 = 4;
-const int mosfetQ2 = 16;
-const int mosfetQ3 = 17;
+String sensors[MAX_SENSORS] = {
+    "white_water_type_level", // ultaSonicoTRIG[0]
+    "gray_water_type_level",  // ultaSonicoTRIG[1]
+    "black_water_type_level", // ultaSonicoTRIG[2]
+    "boiler_diesel_type_level", // ultaSonicoTRIG[3] - La placa solo tiene capacidad de 3 Ultrasónicos
+    "outdoor_temperature_type_meteorology", // Sensor BMP280 - Temperatura Digital Exterior
+    "indoor_temperature_type_meteorology", // Sensor DTH22  - Temperatura Digital Interior MotorHome
+    "refrigerator_temperature_type_meteorology", // DS18b20 - Temperatura Análoga
+    "atmospheric_pressure_type_meteorology", // Sensor BMP280 - Presión Atmosférica -  ofrece un rango de medición de 300 a 1100 hPa (Hecto Pascal)
+    "altitude_type_meteorology",            // Sensor BMP280
+    "ppm_type_environmental_sensors",       // Sensor MQ2 - PPM
+    "butane_type_environmental_sensors",    // Sensor MQ2 - Butano
+    "propane_type_environmental_sensors",   // Sensor MQ2 - Propano
+    "methane_type_environmental_sensors",   // Sensor MQ2 - Metano
+    "alcohol_type_environmental_sensors",   // Sensor MQ2 - Alcohol
+    "hall_type_battery",                    // Sensor Efecto Hall Interno ESP32 (hallRead()) - Voltaje entrada Placa
+    "starter_type_battery",                 // Sensor que Mide la Bateria Eterna del Motor Home 
+    "bomb_type_switches",                   // Actuador Bomba - MOSFETQ2
+    "refrigerator_type_switches",           // Actuador Refri - La Placa solo tiene capacidad de 3 Actuadores
+    "lights_type_switches",                   // Iluminación MotorHome - MOSFETQ3
+    "boiler_type_switches",                 // Actuador Caldera - RELAY1
+};
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", -3 * 60 * 60); // GMT-3 para Argentina
-
-Adafruit_BMP280 bmp;
-DallasTemperature sensors(&ds18b20Pin);
-
-// Inicialización de funciones
-void configuraFechaHora();
-void inicializarSensores();
-void inicializarActuadores();
-void conectarWiFi();
-
-// Funciones para lectura de sensores
-float leerTemperaturaDHT22();
-float leerHumedadDHT22();
-float leerTemperaturaDS18B20();
-float leerPresionBMP280();
-float medirNivelLiquidoTanque(int trigPin, int echoPin);
-void leerHumoMQ2();
-
-// Funciones para controlar actuadores
-void controlarRelay1();
-void controlarMosfetQ2();
-void controlarMosfetQ3();
+bool pauseData = false;
+bool isComplete = false;
+uint64_t chipid_mac;
+char chipid_string[20];
+String chipID;
+bool isValidSensor(String sensor)
+{
+  for (int i = 0; i < MAX_SENSORS; i++)
+  {
+    if (sensors[i] == sensor)
+    {
+      return true;
+    }
+  }
+  return false;
+}
 
 void setup()
 {
-  Serial.begin(9600);
-  SerialBT.begin("ESP32_BT"); // Nombre del dispositivo Bluetooth
+  Serial.begin(115200);
+  chipid_mac = ESP.getEfuseMac(); // Obtiene el MAC del chip
+  
+  sprintf(chipid_string, "antural/%04X%08X", (uint16_t)(chipid_mac>>32), (uint32_t)chipid_mac); // Formatea el ID del chip
+  chipID = String(chipid_string); // Convierte a String
+  SerialBT.begin(chipID); // Inicia el Bluetooth
+  Serial.println(chipID); // Imprime la cadena
 
-  // Inicialización de WiFi y conexión
-  conectarWiFi();
-
-  // Inicialización del RTC
-  if (!rtc.begin())
+  dht.begin();
+  for (int i = 0; i < MAX_SENSORS; i++)
   {
-    Serial.println("Modulo RTC no encontrado !");
-    while (1);
+    JsonObject obj = data.createNestedObject();
+
+    String sensor = sensors[i];
+    int underscoreIndex = sensor.indexOf("_type_");
+
+    if (underscoreIndex != -1)
+    {
+      String sensorName = sensor.substring(0, underscoreIndex);
+      String sensorType = sensor.substring(underscoreIndex + 6);
+
+      obj["sensor"] = sensorName;
+      obj["enabled"] = true;
+      obj["type"] = sensorType;
+    }
+    else
+    {
+      obj["sensor"] = sensor;
+      obj["enabled"] = true;
+    }
+
+    objIndices[i] = data.size() - 1;
   }
 
-  // Configuración automática de la fecha y hora desde Internet
-  configuraFechaHora();
+}
 
-  // Inicialización de sensores y actuadores
-  inicializarSensores();
-  inicializarActuadores();
+void updateSensor(JsonObject& obj, const String& sensorName, int minVal, int maxVal, const String& unit) {
+  if (obj["sensor"].as<String>().indexOf(sensorName) != -1) {
+    obj["valor"] = random(minVal, maxVal);
+    obj["unit"] = unit;
+  }
 }
 
 void loop()
 {
-  // Tu código principal aquí, para ejecutar repetidamente:
-  controlarRelay1();
-  controlarMosfetQ2();
-  controlarMosfetQ3();
 
-  float temperaturaDHT22 = leerTemperaturaDHT22();
-  float humedadDHT22 = leerHumedadDHT22();
-  float temperaturaDS18B20 = leerTemperaturaDS18B20();
-  float presionBMP280 = leerPresionBMP280();
-  float nivelTanque01 = medirNivelLiquidoTanque(ultaSonicoTRIG01, ultaSonicoECHO01);
-  float nivelTanque02 = medirNivelLiquidoTanque(ultaSonicoTRIG02, ultaSonicoECHO02);
-  float nivelTanque03 = medirNivelLiquidoTanque(ultaSonicoTRIG03, ultaSonicoECHO03);
-  leerHumoMQ2();
+  static int currentSensorIndex = 0;
 
-  DateTime fecha = rtc.now();
-
-  SerialBT.print("Fecha y Hora: ");
-  SerialBT.print(fecha.day());
-  SerialBT.print("/");
-  SerialBT.print(fecha.month());
-  SerialBT.print("/");
-  SerialBT.print(fecha.year());
-  SerialBT.print(" ");
-  SerialBT.print(fecha.hour());
-  SerialBT.print(":");
-  SerialBT.print(fecha.minute());
-  SerialBT.print(":");
-  SerialBT.println(fecha.second());
-
-  SerialBT.print("Temperatura DHT22: ");
-  SerialBT.print(temperaturaDHT22);
-  SerialBT.println(" °C");
-
-  SerialBT.print("Humedad DHT22: ");
-  SerialBT.print(humedadDHT22);
-  SerialBT.println(" %");
-
-  SerialBT.print("Temperatura DS18B20: ");
-  SerialBT.print(temperaturaDS18B20);
-  SerialBT.println(" °C");
-
-  SerialBT.print("Presión BMP280: ");
-  SerialBT.print(presionBMP280);
-  SerialBT.println(" hPa");
-
-  SerialBT.print("Nivel Tanque 01: ");
-  SerialBT.print(nivelTanque01);
-  SerialBT.println(" cm");
-
-  SerialBT.print("Nivel Tanque 02: ");
-  SerialBT.print(nivelTanque02);
-  SerialBT.println(" cm");
-
-  SerialBT.print("Nivel Tanque 03: ");
-  SerialBT.print(nivelTanque03);
-  SerialBT.println(" cm");
-
-  delay(1000);
-}
-
-// Resto de las funciones
-
-void conectarWiFi()
-{
-  WiFiManager wifiManager;
-
-  if (!wifiManager.autoConnect("MOTOR HOME AP"))
+  if (currentSensorIndex >= MAX_SENSORS)
   {
-    Serial.println("Fallo al conectar y tiempo de espera alcanzado");
-    delay(3000);
-    ESP.restart();
+
+    currentSensorIndex = 0;
+    if (!isComplete)
+    {
+      isComplete = true;
+    }
   }
 
-  Serial.println("Conectado al WiFi");
+  JsonObject obj = data[objIndices[currentSensorIndex]];
+
+  if (SerialBT.available())
+  {
+    String receivedData = SerialBT.readString();
+    receivedData.trim();
+
+    Serial.println(receivedData);
+
+    if (receivedData == "pause")
+    {
+      pauseData = true;
+    }
+    if (receivedData == "resume")
+    {
+      pauseData = false;
+    }
+
+    if (receivedData == "all")
+    {
+      for (int i = 0; i < MAX_SENSORS; i++)
+      {
+        JsonObject obj = data[objIndices[i]];
+        obj["enabled"] = true;
+      }
+    }
+
+    if (receivedData == "clear")
+    {
+      for (int i = 0; i < MAX_SENSORS; i++)
+      {
+        JsonObject obj = data[objIndices[i]];
+        obj["enabled"] = false;
+      }
+    }
+
+    if (isValidSensor(receivedData))
+    {
+      for (int i = 0; i < MAX_SENSORS; i++)
+      {
+        JsonObject obj = data[objIndices[i]];
+        if (obj["sensor"] == receivedData)
+        {
+          obj["enabled"] = true;
+          break;
+        }
+      }
+    }
+    else if (receivedData.startsWith("deselect "))
+    {
+      String sensor = receivedData.substring(9);
+      for (int i = 0; i < MAX_SENSORS; i++)
+      {
+        JsonObject obj = data[objIndices[i]];
+        if (obj["sensor"] == sensor)
+        {
+          obj["enabled"] = false;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!pauseData)
+  {
+    updateSensor(obj, "level", 0, 300, "L");
+    updateSensor(obj, "temperature", -10, 60, "C");
+    updateSensor(obj, "pressure", 900, 1100, "hPa");
+    updateSensor(obj, "altitude", 0, 1000, "msnm");
+    updateSensor(obj, "butane", 0, 1000, "ppm");
+    updateSensor(obj, "propane", 0, 1000, "ppm");
+    updateSensor(obj, "methane", 0, 1000, "ppm");
+    updateSensor(obj, "alcohol", 0, 1000, "ppm");
+    updateSensor(obj, "ppm", 0, 1000, "ppm");
+    updateSensor(obj, "hall", 0, 12, "V");
+    updateSensor(obj, "starter", 0, 12, "V");
+
+    StaticJsonDocument<4096> docToSend;
+    docToSend["data"] = obj;
+    docToSend["is_complete"] = isComplete;
+    docToSend["topic"] = chipID;
+
+    String dataToSend;
+    ArduinoJson::serializeJson(docToSend, dataToSend);
+    SerialBT.println(dataToSend);
+  }
+
+  currentSensorIndex++;
+
+  delay(10000);
 }
-
-void configuraFechaHora()
-{
-  // Implementa la configuración automática de la fecha y hora desde Internet
-}
-
-void inicializarSensores()
-{
-  // Implementa la inicialización de sensores
-}
-
-void inicializarActuadores()
-{
-  // Implementa la inicialización de actuadores
-}
-
-float leerTemperaturaDHT22()
-{
-  // Implementa la lectura de temperatura desde el sensor DHT22
-  // y devuelve el valor leído.
-}
-
-float leerHumedadDHT22()
-{
-  // Implementa la lectura de humedad desde el sensor DHT22
-  // y devuelve el valor leído.
-}
-
-float leerTemperaturaDS18B20()
-{
-  sensors.requestTemperatures();
-  return sensors.getTempCByIndex(0);
-}
-
-float leerPresionBMP280()
-{
-  // Implementa la lectura de presión desde el sensor BMP280
-  // y devuelve el valor leído.
-  return bmp.readPressure() / 100.0F; // Divide por 100 para obtener el valor en hPa
-}
-
-float medirNivelLiquidoTanque(int trigPin, int echoPin)
-{
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  long duration = pulseIn(echoPin, HIGH);
-  return (duration * 0.0343) / 2;
-}
-
-void leerHumoMQ2()
-{
-  // Implementa la lectura de humo desde el sensor MQ2
-  // y realiza las acciones necesarias.
-}
-
-void controlarRelay1()
-{
-  // Implementa el control del relay1
-  // y realiza las acciones necesarias.
-}
-
-void controlarMosfetQ2()
-{
-  // Implementa el control del mosfetQ2
-  // y realiza las acciones necesarias.
-}
-
-void controlarMosfetQ3()
-{
-  // Implementa el control del mosfetQ3
-  // y realiza las acciones necesarias.
-}
-
