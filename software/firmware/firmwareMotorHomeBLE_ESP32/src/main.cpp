@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include <vector>
 #include <BluetoothSerial.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
@@ -6,15 +8,21 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NewPing.h>
-#include <ArduinoJson.h>
 #include <cstdio>
+
+std::vector<String> actuators = {
+    "bomb",
+    "refrigerator",
+    "lights",
+    "boiler",
+};
 
 // #include <cstdio.h>
 BluetoothSerial SerialBT;
 
-#define DHT_PIN 2      // Pin donde está conectado el sensor DHT22
+#define DHT_PIN 34      // Pin donde está conectado el sensor DHT22
 #define DHT_TYPE DHT22 // Tipo de sensor DHT22
-#define MAX_SENSORS 20
+#define MAX_SENSORS 21
 DHT dht(DHT_PIN, DHT_TYPE);
 
 // Definición de pines para sensores
@@ -33,6 +41,11 @@ const int buzzer = 5;
 const int relay1 = 4;
 const int mosfetQ2 = 16;
 const int mosfetQ3 = 17;
+
+// JsonObject *obj[MAX_SENSORS];
+int objIndices[MAX_SENSORS];
+StaticJsonDocument<4096> doc;
+JsonArray data = doc.createNestedArray("data");
 
 Adafruit_BMP280 bmp;
 OneWire oneWire(ds18b20Pin);
@@ -58,12 +71,6 @@ StaticJsonDocument<4096> doc;
 JsonArray data = doc.createNestedArray("data");
 
 
-
-
-
-  
-
-
 String sensorsArray[MAX_SENSORS] = {
     "white_water_type_level", // ultaSonicoTRIG[0]
     "gray_water_type_level",  // ultaSonicoTRIG[1]
@@ -72,6 +79,7 @@ String sensorsArray[MAX_SENSORS] = {
     "outdoor_temperature_type_meteorology", // Sensor BMP280 - Temperatura Digital Exterior
     "indoor_temperature_type_meteorology", // Sensor DTH22  - Temperatura Digital Interior MotorHome
     "refrigerator_temperature_type_meteorology", // DS18b20 - Temperatura Análoga
+    "indoor_hum_type_meteorology", // Sensor DTH22  - Humedad Digital Interior MotorHome
     "atmospheric_pressure_type_meteorology", // Sensor BMP280 - Presión Atmosférica -  ofrece un rango de medición de 300 a 1100 hPa (Hecto Pascal)
     "altitude_type_meteorology",            // Sensor BMP280
     "ppm_type_environmental_sensors",       // Sensor MQ2 - PPM
@@ -92,17 +100,23 @@ bool isComplete = false;
 uint64_t chipid_mac;
 char chipid_string[20];
 String chipID;
-
-int objIndices[MAX_SENSORS];
-
-bool isValidSensor(String sensor) {
-  for (int i = 0; i < MAX_SENSORS; i++) {
-    if (sensorsArray[i] == sensor) {
+bool isValidSensor(String sensor)
+{
+  for (int i = 0; i < MAX_SENSORS; i++)
+  {
+    if (sensors[i] == sensor)
+    {
       return true;
     }
   }
   return false;
 }
+
+bool isActuator(String sensor)
+{ 
+  return std::find(actuators.begin(), actuators.end(), sensor) != actuators.end();
+}
+
 
 // DECLARACION DE FUNCIONES SENSORES
 void initializeSensors() {

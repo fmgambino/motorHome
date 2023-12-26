@@ -1,0 +1,177 @@
+{
+  data:
+    [
+      {
+        type: switches,
+        sensors:
+          [
+            {
+              name: boiler,
+              enabled: true,
+              value: 0.0,
+              unit,
+              timestamp: 1702486390688,
+            },
+            {
+              name: bomb,
+              enabled: true,
+              value: 0.0,
+              unit,
+              timestamp: 1702486442092,
+            },
+            {
+              name: refrigerator,
+              enabled: true,
+              value: 0.0,
+              unit,
+              timestamp: 1702486444879,
+            },
+            {
+              name: lights,
+              enabled: true,
+              value: 0.0,
+              unit,
+              timestamp: 1702486387691,
+            },
+          ],
+      },
+      {
+        type: battery,
+        sensors:
+          [
+            {
+              name: hall,
+              enabled: true,
+              value: 4.0,
+              unit: V,
+              timestamp: 1702486435837,
+            },
+            {
+              name: starter,
+              enabled: true,
+              value: 10.0,
+              unit: V,
+              timestamp: 1702486438855,
+            },
+          ],
+      },
+      {
+        type: environmental_sensors,
+        sensors:
+          [
+            {
+              name: ppm,
+              enabled: true,
+              value: 193551.0,
+              unit: ppm,
+              timestamp: 1702486420956,
+            },
+            {
+              name: butane,
+              enabled: true,
+              value: 353.0,
+              unit: ppm,
+              timestamp: 1702486423795,
+            },
+            {
+              name: propane,
+              enabled: true,
+              value: 552.0,
+              unit: ppm,
+              timestamp: 1702486426810,
+            },
+            {
+              name: methane,
+              enabled: true,
+              value: 447.0,
+              unit: ppm,
+              timestamp: 1702486430083,
+            },
+            {
+              name: alcohol,
+              enabled: true,
+              value: 717.0,
+              unit: ppm,
+              timestamp: 1702486432838,
+            },
+          ],
+      },
+      {
+        type: level,
+        sensors:
+          [
+            {
+              name: white_water,
+              enabled: true,
+              value: 14840.0,
+              unit: L,
+              timestamp: 1702486394080,
+            },
+            {
+              name: gray_water,
+              enabled: true,
+              value: 54500.0,
+              unit: L,
+              timestamp: 1702486396730,
+            },
+            {
+              name: black_water,
+              enabled: true,
+              value: 11000.0,
+              unit: L,
+              timestamp: 1702486399837,
+            },
+            {
+              name: boiler_diesel,
+              enabled: true,
+              value: 7866.0,
+              unit: L,
+              timestamp: 1702486402744,
+            },
+          ],
+      },
+      {
+        type: meteorology,
+        sensors:
+          [
+            {
+              name: outdoor_temperature,
+              enabled: true,
+              value: 54.0,
+              unit: C,
+              timestamp: 1702486405725,
+            },
+            {
+              name: indoor_temperature,
+              enabled: true,
+              value: 18.0,
+              unit: C,
+              timestamp: 1702486408959,
+            },
+            {
+              name: refrigerator_temperature,
+              enabled: true,
+              value: 34.0,
+              unit: C,
+              timestamp: 1702486411759,
+            },
+            {
+              name: atmospheric_pressure,
+              enabled: true,
+              value: 2651.0,
+              unit: hPa,
+              timestamp: 1702486415210,
+            },
+            {
+              name: altitude,
+              enabled: true,
+              value: 6575.0,
+              unit: msnm,
+              timestamp: 1702486417797,
+            },
+          ],
+      },
+    ],
+  isComplete: true,
+  id: F0B049CB94EC,
+}
