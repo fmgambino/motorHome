@@ -7,9 +7,10 @@
 #include <vector>
 #include <NewPing.h>
 #include <Wire.h>
-/*#include <OneWire.h>
 #include <DallasTemperature.h>
-#include <Adafruit_BMP280.h>
+
+
+/* #include <Adafruit_BMP280.h>
 
 
 
@@ -138,6 +139,14 @@ void setup()
   Serial.println(chipID); // Imprime la cadena
 
   dht.begin();
+
+//Declarando Actuadores como Salidas digitales
+
+  pinMode(buzzer, OUTPUT);
+  pinMode(relay1, OUTPUT);
+  pinMode(mosfetQ2, OUTPUT);
+  pinMode(mosfetQ3, OUTPUT);
+
  
   for (int i = 0; i < MAX_SENSORS; i++)
   {
@@ -220,12 +229,34 @@ void loop()
         {
           // AQUI SE ACTIVA EL ACTUADOR
 
+  
+        // Activa el actuador
+        switch (i) {
+          case 0:
+            // Activar Caldera
+            digitalWrite(relay1, HIGH);
+            break;
+          case 1:
+            // Activar bomba
+            digitalWrite(mosfetQ2, HIGH);
+            break;
+          case 2:
+            // Activar luces
+            digitalWrite(mosfetQ3, HIGH);
+            break;
+          default:
+            // No hacer nada
+            break;
+        }
+        // Se sale del bucle for
+        return;
+      }
 
+  // Si el dato recibido no es un actuador, no se hace nada
 
           break;
         }
       }
-    }
 
     if (isValidSensor(receivedData))
     {
@@ -249,14 +280,29 @@ void loop()
         if (obj["sensor"] == sensor)
         {
         //  AQUI SE DESACTIVA EL ACTUADOR
+// Desactiva el actuador
+        switch (i) {
+          case 0:
+            digitalWrite(relay1, LOW); // Desactivar bomba
+            break;
+          case 1:
+            digitalWrite(mosfetQ2, LOW); // Desactivar refrigerador
+            break;
+          case 2:
+            digitalWrite(mosfetQ3, LOW); // Desactivar luces
+            break;
+        }
 
+         // Se sale del bucle for
+        return;
+      }
 
-
+  // Si el dato recibido no es un actuador, no se hace nada
 
           break;
         }
       }
-    }
+
   }
 
   if (!pauseData)
