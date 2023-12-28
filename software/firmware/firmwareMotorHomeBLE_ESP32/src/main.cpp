@@ -1,6 +1,4 @@
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <vector>
 #include <BluetoothSerial.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
@@ -8,14 +6,12 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NewPing.h>
+#include <ArduinoJson.h>
 #include <cstdio>
 
-std::vector<String> actuators = {
-    "bomb",
-    "refrigerator",
-    "lights",
-    "boiler",
-};
+#include <MQ2.h>
+
+MQ2 mq2;
 
 // #include <cstdio.h>
 BluetoothSerial SerialBT;
@@ -42,11 +38,6 @@ const int relay1 = 4;
 const int mosfetQ2 = 16;
 const int mosfetQ3 = 17;
 
-// JsonObject *obj[MAX_SENSORS];
-int objIndices[MAX_SENSORS];
-StaticJsonDocument<4096> doc;
-JsonArray data = doc.createNestedArray("data");
-
 Adafruit_BMP280 bmp;
 OneWire oneWire(ds18b20Pin);
 DallasTemperature sensors(&oneWire);
@@ -55,17 +46,6 @@ NewPing sonar[3] = {
   NewPing(ultaSonicoTRIG[1], ultaSonicoECHO[1]),
   NewPing(ultaSonicoTRIG[2], ultaSonicoECHO[2])
 };
-
-#define TRIGGER_PIN_WHITE_WATER 25
-#define ECHO_PIN_WHITE_WATER 26
-#define TRIGGER_PIN_GRAY_WATER 27
-#define ECHO_PIN_GRAY_WATER 14
-#define TRIGGER_PIN_BLACK_WATER 12
-#define ECHO_PIN_BLACK_WATER 13
-
-NewPing sonarWW(TRIGGER_PIN_WHITE_WATER, ECHO_PIN_WHITE_WATER, 200);
-NewPing sonarGW(TRIGGER_PIN_GRAY_WATER, ECHO_PIN_GRAY_WATER, 200);
-NewPing sonarBW(TRIGGER_PIN_BLACK_WATER, ECHO_PIN_BLACK_WATER, 200);
 
 StaticJsonDocument<4096> doc;
 JsonArray data = doc.createNestedArray("data");
@@ -79,7 +59,6 @@ String sensorsArray[MAX_SENSORS] = {
     "outdoor_temperature_type_meteorology", // Sensor BMP280 - Temperatura Digital Exterior
     "indoor_temperature_type_meteorology", // Sensor DTH22  - Temperatura Digital Interior MotorHome
     "refrigerator_temperature_type_meteorology", // DS18b20 - Temperatura Análoga
-    "indoor_hum_type_meteorology", // Sensor DTH22  - Humedad Digital Interior MotorHome
     "atmospheric_pressure_type_meteorology", // Sensor BMP280 - Presión Atmosférica -  ofrece un rango de medición de 300 a 1100 hPa (Hecto Pascal)
     "altitude_type_meteorology",            // Sensor BMP280
     "ppm_type_environmental_sensors",       // Sensor MQ2 - PPM
@@ -93,6 +72,7 @@ String sensorsArray[MAX_SENSORS] = {
     "refrigerator_type_switches",           // Actuador Refri - La Placa solo tiene capacidad de 3 Actuadores
     "lights_type_switches",                   // Iluminación MotorHome - MOSFETQ3
     "boiler_type_switches",                 // Actuador Caldera - RELAY1
+    "indoor_hum_type_meteorology", // Sensor DTH22  - Humedad Digital Interior MotorHome
 };
 
 bool pauseData = false;
@@ -100,23 +80,17 @@ bool isComplete = false;
 uint64_t chipid_mac;
 char chipid_string[20];
 String chipID;
-bool isValidSensor(String sensor)
-{
-  for (int i = 0; i < MAX_SENSORS; i++)
-  {
-    if (sensors[i] == sensor)
-    {
+
+int objIndices[MAX_SENSORS];
+
+bool isValidSensor(String sensor) {
+  for (int i = 0; i < MAX_SENSORS; i++) {
+    if (sensorsArray[i] == sensor) {
       return true;
     }
   }
   return false;
 }
-
-bool isActuator(String sensor)
-{ 
-  return std::find(actuators.begin(), actuators.end(), sensor) != actuators.end();
-}
-
 
 // DECLARACION DE FUNCIONES SENSORES
 void initializeSensors() {
@@ -127,59 +101,110 @@ void initializeSensors() {
   }
 }
 
-void readDHT22(float& temperature, float& humidity) {
-  temperature = dht.readTemperature();
-  humidity = dht.readHumidity();
+// void readDHT22(float& temperature, float& humidity) {
+//   temperature = dht.readTemperature();
+//   humidity = dht.readHumidity();
+// }
+
+// humidity
+float humidity() {
+  return dht.readHumidity();
 }
 
+// indoor_temperature
+float indoorTemperature() {
+  return dht.readTemperature();
+}
+
+
+// refrigerator_temperature
 float readTemperatureDS18B20() {
   sensors.requestTemperatures();
   return sensors.getTempCByIndex(0);
 }
 
-float readPressureBMP280() {
-  return bmp.readPressure() / 100.0;
+// altitude
+float altitude() {
+   // Leer la presión atmosférica actual
+  float pressure = bmp280.readPressure();
+
+  // Calcular la altitud
+  float alt = (1013.25 - pressure) / (1013.25 * 0.0065);
+
+  return alt;
 }
+
+// atmospheric_pressure
+float atmosphericPressure() {
+  return bmp280.readPressure();
+}
+
+// outdoor_temperature
+float outTemperature() {
+  return bmp280.readTemperature();
+}
+
+// float readPressureBMP280() {
+//   return bmp.readPressure() / 100.0;
+// }
 
 int readUltrasonicDistance(int sensorIndex) {
   return sonar[sensorIndex].ping_cm();
 }
 
-int whiteWater() {
-int distancia = sonarWW.ping_cm();
+float checkTankStatus ();
 
-  // Calcular el nivel de agua
-  int nivel = 100 - distancia;
- return nivel;
-}
-
-int grayWater() {
-int distancia = sonarGW.ping_cm();
-
-  // Calcular el nivel de agua
-  int nivel = 100 - distancia;
- return nivel;
-}
-
-int blackWater() {
-int distancia = sonarBW.ping_cm();
-
-  // Calcular el nivel de agua
-  int nivel = 100 - distancia;
- return nivel;
-}
-
-float checkTankStatus();
-
-int readMQ2Gas() {
+float ppm() {
   int sensorValue = analogRead(MQ2Pin);
   float voltage = sensorValue * (5.0 / 1023.0);
   float RS = (5.0 - voltage) / voltage;
   float MQ_Ro = RS / 9.8;  // Valor típico para el sensor MQ2 en aire limpio
   float MQ2Curve[2] = {2.0, 0.3};  // Ajusta la curva característica según la hoja de datos
   float ppm = pow(10, ((log10(RS / MQ_Ro) - MQ2Curve[1]) / MQ2Curve[0]));
-  return int(ppm);
+  return ppm;
 }
+
+float butane() {
+// Leer la resistencia del sensor en presencia del gas
+  int resistance = mq2.readRs();
+
+  // Calcular la concentración del gas
+  float concentration = (resistance - mq2.Rs_air) / mq2.sensitivity;
+
+  return concentration;
+}
+
+float propano() {
+   // Leer la resistencia del sensor en presencia del gas
+  int resistance = mq2.readRs();
+
+  // Calcular la concentración del gas
+  float concentration = (resistance - mq2.Rs_air) / mq2.sensitivity_propane;
+
+  return concentration;
+
+}
+
+float metano() {
+  int resistance = mq2.readRs();
+
+  // Calcular la concentración del gas
+  float concentration = (resistance - mq2.Rs_air) / mq2.sensitivity_methane;
+
+  return concentration;
+}
+
+float alcohol() {
+  // Leer la resistencia del sensor en presencia del gas
+  int resistance = mq2.readRs();
+
+  // Calcular la concentración del gas
+  float concentration = (resistance - mq2.Rs_air) / mq2.sensitivity_alcohol;
+
+  return concentration;
+}
+
+
 
 float readAnalogSensor(int pin) {
   return analogRead(pin);
@@ -352,31 +377,21 @@ void setup() {
   dht.begin();
   initializeSensors();
 
-  for (int i = 0; i < MAX_SENSORS; i++) {
-    JsonObject obj = data.createNestedObject();
-
-    String sensor = sensorsArray[i];
-    int underscoreIndex = sensor.indexOf("_type_");
-
-    if (underscoreIndex != -1) {
-      String sensorName = sensor.substring(0, underscoreIndex);
-      String sensorType = sensor.substring(underscoreIndex + 6);
-
-      obj["sensor"] = sensorName;
-      obj["enabled"] = true;
-      obj["type"] = sensorType;
-    } else {
-      obj["sensor"] = sensor;
-      obj["enabled"] = true;
-    }
-
-    objIndices[i] = data.size() - 1;
-  }
+  
 }
 
 void loop() {
   handleBluetoothCommands();
   sendSensorData();
+  Dynamic JsonDocument doc(1024);
+
+  doc["data"]["sensor"] = "alcohol";
+  doc["data"]["enabled"] = true;
+  doc["data"]["type"] = "type";
+  doc["data"]["valor"] = 123;
+  doc["data"]["unit"] = "ppm";
+  doc["is_complete"] = true;
+  doc["topic"] = chipID;
 
   // Lógica de control de actuadores
   if (!pauseData) {

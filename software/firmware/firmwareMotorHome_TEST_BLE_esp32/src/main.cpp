@@ -325,5 +325,5 @@ void loop()
 
   currentSensorIndex++;
 
-  delay(3000);
+  delay(500);
 }
