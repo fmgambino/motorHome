@@ -2,12 +2,15 @@
 #include <BluetoothSerial.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
+
 #include <ArduinoJson.h>
 #include <vector>
 #include <NewPing.h>
+#include <Wire.h>
 /*#include <OneWire.h>
 #include <DallasTemperature.h>
 #include <Adafruit_BMP280.h>
+
 
 
 #define BMP_SCK  (13)
@@ -26,7 +29,7 @@ std::vector<String> actuators = {
 };
 BluetoothSerial SerialBT;
 
-#define DHT_PIN 34      // Pin donde está conectado el sensor DHT22
+#define DHT_PIN 32      // Pin donde está conectado el sensor DHT22
 #define DHT_TYPE DHT22 // Tipo de sensor DHT22
 #define MAX_SENSORS 21
 DHT dht(DHT_PIN, DHT_TYPE); //Inicializa el sensor
@@ -35,10 +38,10 @@ DHT dht(DHT_PIN, DHT_TYPE); //Inicializa el sensor
 const int AI0 = 39;
 const int AI1 = 36;
 const int ds18b20Pin = 35;
-const int dht22Pin = 34;
+const int dht22Pin = 32;
 const int bmp280SDA = 21;
 const int bmp280SCL = 22;
-const int MQ2Pin = 16;
+const int MQ2Pin = 34;
 const int ultaSonicoTRIG[3] = {25, 27, 12};
 const int ultaSonicoECHO[3] = {26, 14, 13};
 
@@ -62,14 +65,13 @@ NewPing sonar[3] = {
 //DEFINICION DE VARIABLES
 
 float tempDHT;
-float huumDHT;
+float humDHT;
 
-//************************************
-//***** DECLARACION FUNCIONES ********
-//************************************
+// Constante de resistencia inicial del sensor (ajusta según la calibración)
+const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limpias del sensor
 
-void fdht22();
-
+// Variables Gases para los valores de ppm
+float ppm, butano, propano, metano, alcohol;
 
 // JsonObject *obj[MAX_SENSORS];
 int objIndices[MAX_SENSORS];
@@ -125,6 +127,9 @@ bool isActuator(String sensor)
 void setup()
 {
   Serial.begin(115200);
+  // Esperamos a que el monitor serie esté listo
+  while (!Serial);
+
   chipid_mac = ESP.getEfuseMac();
   sprintf(chipid_string, "antural/%04X%08X", (uint16_t)(chipid_mac >> 32), (uint32_t)chipid_mac);
   chipID = String(chipid_string);
@@ -133,6 +138,7 @@ void setup()
   Serial.println(chipID); // Imprime la cadena
 
   dht.begin();
+ 
   for (int i = 0; i < MAX_SENSORS; i++)
   {
     JsonObject obj = data.createNestedObject();
@@ -154,13 +160,9 @@ void setup()
   }
 }
 
-
-
 void loop()
 {
-
-fdht22();
-
+  
   static int currentSensorIndex = 0;
 
   if (currentSensorIndex >= MAX_SENSORS)
@@ -259,11 +261,14 @@ fdht22();
 
   if (!pauseData)
   {
+    float Rs = analogRead(MQ2Pin);
+    // Calculamos la concentración total en ppm
+    ppm = (Rs / Ro) * 1000000;
 
 
      if (obj["sensor"] == "white_water")
     {
-       obj["sensor"] = 1; // aqui pone el valor real del sensor
+       obj["valor"] = 1; // aqui pone el valor real del sensor
        obj["unit"] = "L";
     }
     else if (obj["sensor"] == "gray_water")
@@ -287,7 +292,8 @@ fdht22();
        obj["unit"] = "C";
     }
     else if (obj["sensor"] == "indoor_temperature")
-    {
+    {  
+       float tempDHT = dht.readTemperature();
        obj["valor"] = tempDHT; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
@@ -304,32 +310,37 @@ fdht22();
     }
     else if (obj["sensor"] == "altitude")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+  
+       obj["valor"] = 5; // aqui pone el valor real del sensor
        obj["unit"] = "msnm";
     }
     else if (obj["sensor"] == "ppm")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       obj["valor"] = ppm; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "butane")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       butano = ppm * 0.02;
+       obj["valor"] = butano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "propane")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       propano = ppm * 0.01;
+       obj["valor"] = propano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "methane")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       metano = ppm * 0.06;
+       obj["valor"] = metano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "alcohol")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       alcohol = ppm * 0.08;
+       obj["valor"] = alcohol; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     } else if (obj["sensor"] == "hall")
     {
@@ -356,10 +367,12 @@ fdht22();
     }
     else if (obj["sensor"] == "boiler")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       obj["valor"] = 3; // aqui pone el valor real del sensor
+
     } else if (obj["sensor"] == "indoor_hum")
-    {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+    {  
+       float humDHT = dht.readHumidity();
+       obj["valor"] = humDHT; // aqui pone el valor real del sensor
        obj["unit"] = "%";
     }
     else
@@ -382,33 +395,12 @@ fdht22();
 
   currentSensorIndex++;
 
-  delay(2000);
+  delay(700);
 }
-
-
-//FUNCIONES DE LOS SENSORES
-
-//SENSOR DHT22
-void fdht22(float &humDHT, float &tempDHT) {
-
-  // Obtiene los datos
-  dht.begin();
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-
-  // Si la lectura es válida, la guarda en las variables
-  if (isnan(h) || isnan(t)) {
-    Serial.println("Error al leer los datos del sensor DHT22");
-  } else {
-    humDHT = h;
-    tempDHT = t;
-  }
-}
-
-
 
 
 // FUNCION PARA RESETEO DE PLACA - HARDRESET
+ 
   int i;
   int count;
 void fHardReset()
