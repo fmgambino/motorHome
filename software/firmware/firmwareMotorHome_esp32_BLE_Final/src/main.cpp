@@ -448,11 +448,11 @@ void loop()
 
   currentSensorIndex++;
 
-  delay(700);
+  delay(500);
 }
 
 
-// FUNCION PARA RESETEO DE PLACA - HARDRESET
+/* // FUNCION PARA RESETEO DE PLACA - HARDRESET
  
   int i;
   int count;
@@ -469,4 +469,4 @@ void fHardReset()
     Serial.print("HARD-RESET ACTIVADO: ");
     i = 0;
   }
-}
+} */
