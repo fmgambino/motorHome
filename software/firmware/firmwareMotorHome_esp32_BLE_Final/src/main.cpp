@@ -1,14 +1,14 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
-#include <Adafruit_Sensor.h>
 #include <DHT.h>
 
 #include <ArduinoJson.h>
 #include <vector>
 #include <NewPing.h>
 #include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <OneWire.h>
 #include <DallasTemperature.h>
-
 
 /* #include <Adafruit_BMP280.h>
 
@@ -52,9 +52,9 @@ const int relay1 = 4;
 const int mosfetQ2 = 16;
 const int mosfetQ3 = 17;
 
-/*Adafruit_BMP280 bmp;
+/*Adafruit_BMP280 bmp;*/
 OneWire oneWire(ds18b20Pin);
-DallasTemperature sensors(&oneWire);*/
+DallasTemperature indoorTemp(&oneWire);
 
 NewPing sonar[3] = {
   NewPing(ultaSonicoTRIG[0], ultaSonicoECHO[0]),
@@ -73,6 +73,8 @@ const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limp
 
 // Variables Gases para los valores de ppm
 float ppm, butano, propano, metano, alcohol;
+
+float tempRegri; // Variable para almacenar la temperatura
 
 // JsonObject *obj[MAX_SENSORS];
 int objIndices[MAX_SENSORS];
