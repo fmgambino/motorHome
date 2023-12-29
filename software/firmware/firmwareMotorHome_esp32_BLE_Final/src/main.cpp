@@ -65,12 +65,7 @@ NewPing sonar[3] = {
 
 //DEFINICION DE VARIABLES
 
-float tempDHT;
-float humDHT;
 
-// Constante de resistencia inicial del sensor (ajusta según la calibración)
-const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limpias del sensor
-float Rs = 100;
 // Variables Gases para los valores de ppm
 float ppm, butano, propano, metano, alcohol;
 
@@ -309,17 +304,16 @@ void loop()
 
   if (!pauseData)
   {
+    // Constante de resistencia inicial del sensor (ajusta según la calibración)
+    const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limpias del sensor
+    float Rs = 100;
     // Tomamos 100 muestras
-  for (int i = 0; i < 100; i++) {
-    Rs = (analogRead(MQ2Pin)*0.1 );
-    ppm = (Rs / Ro) * 1000000;
+    for (int i = 0; i < 100; i++) {
+        Rs = (analogRead(MQ2Pin)*1);
+        ppm = (Rs / Ro) * 1000000;
     }
     // Calculamos el promedio
     ppm = (ppm / 100);
-
-    Serial.print("RS Valor: ");
-    Serial.println(Rs);
-
 
      if (obj["sensor"] == "white_water")
     {
@@ -348,7 +342,7 @@ void loop()
     }
     else if (obj["sensor"] == "indoor_temperature")
     {  
-       tempDHT = dht.readTemperature();
+       float tempDHT = dht.readTemperature();
        obj["valor"] = tempDHT; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
@@ -358,7 +352,7 @@ void loop()
        tempRefri.requestTemperatures(); // Usando el nuevo nombre
 
        // Lee la temperatura en grados Celsius.
-       tempRef = tempRefri.getTempCByIndex(0);
+       float tempRef = tempRefri.getTempCByIndex(0);
        obj["valor"] = tempRef; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
@@ -381,25 +375,25 @@ void loop()
     }
     else if (obj["sensor"] == "butane")
     {
-       butano = ppm * 0.02;
+       float butano = ppm * 0.02;
        obj["valor"] = butano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "propane")
     {
-       propano = ppm * 0.01;
+       float propano = ppm * 0.01;
        obj["valor"] = propano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "methane")
     {
-       metano = ppm * 0.06;
+       float metano = ppm * 0.06;
        obj["valor"] = metano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     }
     else if (obj["sensor"] == "alcohol")
     {
-       alcohol = ppm * 0.08;
+       float alcohol = ppm * 0.08;
        obj["valor"] = alcohol; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
     } else if (obj["sensor"] == "hall")
@@ -455,7 +449,7 @@ void loop()
 
   currentSensorIndex++;
 
-  delay(500);
+  delay(100);
 }
 
 
