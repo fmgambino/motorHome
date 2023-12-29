@@ -54,7 +54,7 @@ const int mosfetQ3 = 17;
 
 /*Adafruit_BMP280 bmp;*/
 OneWire oneWire(ds18b20Pin);
-DallasTemperature indoorTemp(&oneWire);
+DallasTemperature tempRefri(&oneWire);
 
 NewPing sonar[3] = {
   NewPing(ultaSonicoTRIG[0], ultaSonicoECHO[0]),
@@ -74,7 +74,7 @@ const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limp
 // Variables Gases para los valores de ppm
 float ppm, butano, propano, metano, alcohol;
 
-float tempRegri; // Variable para almacenar la temperatura
+float tempRef; // Variable para almacenar la temperatura
 
 // JsonObject *obj[MAX_SENSORS];
 int objIndices[MAX_SENSORS];
@@ -141,7 +141,7 @@ void setup()
   Serial.println(chipID); // Imprime la cadena
 
   dht.begin();
-
+  tempRefri.begin(); // Iniciar el sensor
 //Declarando Actuadores como Salidas digitales
 
   pinMode(buzzer, OUTPUT);
@@ -347,7 +347,12 @@ void loop()
     }
     else if (obj["sensor"] == "refrigerator_temperature")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       // Solicita la temperatura al sensor.
+       tempRefri.requestTemperatures(); // Usando el nuevo nombre
+
+       // Lee la temperatura en grados Celsius.
+       tempRef = tempRefri.getTempCByIndex(0);
+       obj["valor"] = tempRef; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
     else if (obj["sensor"] == "atmospheric_pressure")
