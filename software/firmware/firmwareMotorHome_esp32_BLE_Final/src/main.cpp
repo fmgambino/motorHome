@@ -70,7 +70,7 @@ float humDHT;
 
 // Constante de resistencia inicial del sensor (ajusta según la calibración)
 const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limpias del sensor
-
+float Rs = 100;
 // Variables Gases para los valores de ppm
 float ppm, butano, propano, metano, alcohol;
 
@@ -309,9 +309,16 @@ void loop()
 
   if (!pauseData)
   {
-    float Rs = analogRead(MQ2Pin);
-    // Calculamos la concentración total en ppm
+    // Tomamos 100 muestras
+  for (int i = 0; i < 100; i++) {
+    Rs = (analogRead(MQ2Pin)*0.1 );
     ppm = (Rs / Ro) * 1000000;
+    }
+    // Calculamos el promedio
+    ppm = (ppm / 100);
+
+    Serial.print("RS Valor: ");
+    Serial.println(Rs);
 
 
      if (obj["sensor"] == "white_water")
@@ -341,7 +348,7 @@ void loop()
     }
     else if (obj["sensor"] == "indoor_temperature")
     {  
-       float tempDHT = dht.readTemperature();
+       tempDHT = dht.readTemperature();
        obj["valor"] = tempDHT; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
