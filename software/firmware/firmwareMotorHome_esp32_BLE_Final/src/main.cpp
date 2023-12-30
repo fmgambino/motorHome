@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
+#include <BLEDevice.h>
+
 #include <DHT.h>
 
 #include <ArduinoJson.h>
@@ -125,6 +127,8 @@ bool isActuator(String sensor)
 
 void setup()
 {
+  
+  btStart();
   Serial.begin(115200);
   // Esperamos a que el monitor serie esté listo
   while (!Serial);
@@ -169,7 +173,6 @@ void setup()
 
 void loop()
 {
-  
   static int currentSensorIndex = 0;
 
   if (currentSensorIndex >= MAX_SENSORS)
@@ -218,43 +221,24 @@ void loop()
         obj["enabled"] = false;
       }
     }
+Serial.print("DATO ACTUADOR RECIBIDO: ");
+Serial.println(receivedData);
+delay(2000);
 
-    if(isActuator(receivedData)){
-      for (int i = 0; i < MAX_SENSORS; i++)
-      {
-        JsonObject obj = data[objIndices[i]];
-        if (obj["sensor"] == receivedData)
-        {
-          // AQUI SE ACTIVA EL ACTUADOR
+if(receivedData == "pausedeselect bombresume"){
+          // Activar bomba
+          digitalWrite(mosfetQ2, HIGH);
+          Serial.println("BOMBA ACTIVA");
+          delay(700);
 
-  
-        // Activa el actuador
-        switch (i) {
-          case 0:
-            // Activar Caldera
-            digitalWrite(relay1, HIGH);
-            break;
-          case 1:
-            // Activar bomba
-            digitalWrite(mosfetQ2, HIGH);
-            break;
-          case 2:
-            // Activar luces
-            digitalWrite(mosfetQ3, HIGH);
-            break;
-          default:
-            // No hacer nada
-            break;
-        }
-        // Se sale del bucle for
-        return;
-      }
+   }else {
+          // Activar bomba
+          digitalWrite(mosfetQ2, LOW);
+          Serial.println("BOMBA APAGADA");
+          delay(700);
+   }
 
-  // Si el dato recibido no es un actuador, no se hace nada
 
-          break;
-        }
-      }
 
     if (isValidSensor(receivedData))
     {
@@ -278,16 +262,22 @@ void loop()
         if (obj["sensor"] == sensor)
         {
         //  AQUI SE DESACTIVA EL ACTUADOR
-// Desactiva el actuador
+        // Desactiva el actuador
         switch (i) {
           case 0:
             digitalWrite(relay1, LOW); // Desactivar bomba
+            Serial.println("CALDERA APAGADA");
+            //delay(700);
             break;
           case 1:
             digitalWrite(mosfetQ2, LOW); // Desactivar refrigerador
+            Serial.println("BOMBA APAGADA");
+            //delay(700);
             break;
           case 2:
             digitalWrite(mosfetQ3, LOW); // Desactivar luces
+            Serial.println("LUCES APAGADA");
+            //delay(700);
             break;
         }
 
@@ -315,7 +305,7 @@ void loop()
 
      if (obj["sensor"] == "white_water")
     {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
+       obj["valor"] = 2; // aqui pone el valor real del sensor
        obj["unit"] = "L";
     }
     else if (obj["sensor"] == "gray_water")
@@ -362,7 +352,6 @@ void loop()
     }
     else if (obj["sensor"] == "altitude")
     {
-  
        obj["valor"] = 23.32; // aqui pone el valor real del sensor
        obj["unit"] = "msnm";
     }
@@ -449,23 +438,3 @@ void loop()
 
   delay(200);
 }
-
-
-/* // FUNCION PARA RESETEO DE PLACA - HARDRESET
- 
-  int i;
-  int count;
-void fHardReset()
-{
-
-  Serial.print("RESETEO EN: ");
-  Serial.println(i);
-
-  if (i == count)
-  {
-    delay(300);
-    ESP.restart(); // PARA ESP32
-    Serial.print("HARD-RESET ACTIVADO: ");
-    i = 0;
-  }
-} */
