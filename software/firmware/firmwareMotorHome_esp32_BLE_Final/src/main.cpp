@@ -334,6 +334,7 @@ if(receivedData == "pausedeselect bombresume"){
        obj["valor"] = tempDHT; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
+    
     else if (obj["sensor"] == "refrigerator_temperature")
     {
        // Solicita la temperatura al sensor.
