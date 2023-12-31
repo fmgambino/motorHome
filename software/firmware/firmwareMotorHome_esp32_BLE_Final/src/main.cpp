@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
-#include <BLEDevice.h>
-
 #include <DHT.h>
 
 #include <ArduinoJson.h>
@@ -57,10 +55,10 @@ const int mosfetQ3 = 17;
 
 //Deffiniciones d eVariables
 
-float butano, propano, metano, alcohol, ppm;
+int butano, propano, metano, alcohol, ppm;
 
 // Constante de resistencia inicial del sensor (ajusta según la calibración)
-    const float Ro = 10000.0;  // Coloca el valor de resistencia en condiciones limpias del sensor
+    int Ro = 10000;  // Coloca el valor de resistencia en condiciones limpias del sensor
     float Rs = 100;
 
 
@@ -128,7 +126,7 @@ bool isActuator(String sensor)
 void setup()
 {
   
-  btStart();
+
   Serial.begin(115200);
   // Esperamos a que el monitor serie esté listo
   while (!Serial);
@@ -173,6 +171,7 @@ void setup()
 
 void loop()
 {
+  
   static int currentSensorIndex = 0;
 
   if (currentSensorIndex >= MAX_SENSORS)
@@ -225,20 +224,54 @@ Serial.print("DATO ACTUADOR RECIBIDO: ");
 Serial.println(receivedData);
 delay(2000);
 
-if(receivedData == "pausedeselect bombresume"){
+
+    if(isActuator(receivedData)){
+      for (int i = 0; i < MAX_SENSORS; i++)
+      {
+        JsonObject obj = data[objIndices[i]];
+        if (obj["sensor"] == receivedData)
+        {
+      // Aquí se activa el actuador
+
+      // Activa el actuador
+      switch (i) {
+        case 0:
+          // Activar Caldera
+          digitalWrite(relay1, HIGH);
+          Serial.println("CALDERA ACTIVA");
+          delay(700);
+          break;
+        case 1:
           // Activar bomba
           digitalWrite(mosfetQ2, HIGH);
           Serial.println("BOMBA ACTIVA");
           delay(700);
-
-   }else {
-          // Activar bomba
-          digitalWrite(mosfetQ2, LOW);
-          Serial.println("BOMBA APAGADA");
+          break;
+        case 2:
+          //Activar luces
+          digitalWrite(mosfetQ3, HIGH);
+          Serial.println("LUCES ACTIVA");
           delay(700);
-   }
+          break;
+/*         case 3:
+          // Activar refrigerador
+          digitalWrite(mosfetQ4, HIGH);
+          Serial.println("REFRIGERADOR ACTIVA");
+          //delay(700);
+          break; */
+        default:
+          // No hacer nada
+          break;
+      }
+      // Se sale del bucle for
+      return;
+    }
 
+  // Si el dato recibido no es un actuador, no se hace nada
 
+          break;
+        }
+      }
 
     if (isValidSensor(receivedData))
     {
@@ -262,7 +295,7 @@ if(receivedData == "pausedeselect bombresume"){
         if (obj["sensor"] == sensor)
         {
         //  AQUI SE DESACTIVA EL ACTUADOR
-        // Desactiva el actuador
+      // Desactiva el actuador
         switch (i) {
           case 0:
             digitalWrite(relay1, LOW); // Desactivar bomba
@@ -305,7 +338,7 @@ if(receivedData == "pausedeselect bombresume"){
 
      if (obj["sensor"] == "white_water")
     {
-       obj["valor"] = 2; // aqui pone el valor real del sensor
+       obj["valor"] = 1; // aqui pone el valor real del sensor
        obj["unit"] = "L";
     }
     else if (obj["sensor"] == "gray_water")
@@ -330,7 +363,7 @@ if(receivedData == "pausedeselect bombresume"){
     }
     else if (obj["sensor"] == "indoor_temperature")
     {  
-       float tempDHT = dht.readTemperature();
+       const int tempDHT = dht.readTemperature();
        obj["valor"] = tempDHT; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
@@ -340,7 +373,7 @@ if(receivedData == "pausedeselect bombresume"){
        tempRefri.requestTemperatures(); // Usando el nuevo nombre
 
        // Lee la temperatura en grados Celsius.
-       float tempRef = tempRefri.getTempCByIndex(0); // Variable para almacenar la temperatura
+       const int tempRef = tempRefri.getTempCByIndex(0); // Variable para almacenar la temperatura
        obj["valor"] = tempRef; // aqui pone el valor real del sensor
        obj["unit"] = "C";
     }
@@ -352,7 +385,8 @@ if(receivedData == "pausedeselect bombresume"){
     }
     else if (obj["sensor"] == "altitude")
     {
-       obj["valor"] = 23.32; // aqui pone el valor real del sensor
+      int altitud =  23;
+       obj["valor"] = altitud; // aqui pone el valor real del sensor
        obj["unit"] = "msnm";
     }
     else if (obj["sensor"] == "ppm")
@@ -412,7 +446,7 @@ if(receivedData == "pausedeselect bombresume"){
 
     } else if (obj["sensor"] == "indoor_hum")
     {  
-       float humDHT = dht.readHumidity();
+       const int humDHT = dht.readHumidity();
        obj["valor"] = humDHT; // aqui pone el valor real del sensor
        obj["unit"] = "%";
     }
@@ -438,3 +472,23 @@ if(receivedData == "pausedeselect bombresume"){
 
   delay(200);
 }
+
+
+/* // FUNCION PARA RESETEO DE PLACA - HARDRESET
+ 
+  int i;
+  int count;
+void fHardReset()
+{
+
+  Serial.print("RESETEO EN: ");
+  Serial.println(i);
+
+  if (i == count)
+  {
+    delay(300);
+    ESP.restart(); // PARA ESP32
+    Serial.print("HARD-RESET ACTIVADO: ");
+    i = 0;
+  }
+} */
