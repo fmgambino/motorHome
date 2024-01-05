@@ -1,0 +1,153 @@
+{
+    "@@locale": "es",
+    "counterAppBarTitle": "Contador",
+    "@counterAppBarTitle": {
+        "description": "Texto mostrado en la AppBar de la página del contador"
+    },
+    "homeAppBarTitle": "Casa rodante",
+    "@homeAppBarTitle": {
+        "description": "Texto mostrado en la AppBar de la página del home"
+    },
+    "homeDrawerHeader": "Configuraciones",
+    "@homeDrawerHeader": {
+        "description": "Texto mostrado en la Drawer de la página del home"
+    },
+    "homeDrawerItem1": "Tema claro/oscuro",
+    "@homeDrawerItem1": {
+        "description": "Texto mostrado en la Drawer de la página del home"
+    },
+    "homeDrawerItem2": "Idioma español/inglés",
+    "@homeDrawerItem2": {
+        "description": "Texto mostrado en la Drawer de la página del home"
+    },
+    "white_water": "Agua blanca",
+    "@white_water": {
+        "description": "Descripción para white_water"
+    },
+    "gray_water": "Agua gris",
+    "@gray_water": {
+        "description": "Descripción para gray_water"
+    },
+    "black_water": "Agua negra",
+    "@black_water": {
+        "description": "Descripción para black_water"
+    },
+    "boiler_diesel": "Caldera de diésel",
+    "@boiler_diesel": {
+        "description": "Descripción para boiler_diesel"
+    },
+    "outdoor_temperature": "Temp. exterior",
+    "@outdoor_temperature": {
+        "description": "Descripción para outdoor_temperature"
+    },
+    "indoor_temperature": "Temp. interior",
+    "@indoor_temperature": {
+        "description": "Descripción para indoor_temperature"
+    },
+    "refrigerator_temperature": "Temp. del refrigerador",
+    "@refrigerator_temperature": {
+        "description": "Descripción para refrigerator_temperature"
+    },
+    "atmospheric_pressure": "Presión atmosférica",
+    "@atmospheric_pressure": {
+        "description": "Descripción para atmospheric_pressure"
+    },
+    "altitude": "Altitud",
+    "@altitude": {
+        "description": "Descripción para altitude"
+    },
+    "ppm": "PPM",
+    "@ppm": {
+        "description": "Descripción para ppm"
+    },
+    "butane": "Butano",
+    "@butane": {
+        "description": "Descripción para butane"
+    },
+    "propane": "Propano",
+    "@propane": {
+        "description": "Descripción para propane"
+    },
+    "methane": "Metano",
+    "@methane": {
+        "description": "Descripción para methane"
+    },
+    "alcohol": "Alcohol",
+    "@alcohol": {
+        "description": "Descripción para alcohol"
+    },
+    "hall": "Salón",
+    "@hall": {
+        "description": "Descripción para hall"
+    },
+    "starter": "Arrancador",
+    "@starter": {
+        "description": "Descripción para starter"
+    },
+    "bomb": "Bomba",
+    "@bomb": {
+        "description": "Descripción para bomb"
+    },
+    "refrigerator": "Refrigerador",
+    "@refrigerator": {
+        "description": "Descripción para refrigerator"
+    },
+    "lights": "Luces",
+    "@lights": {
+        "description": "Descripción para luces"
+    },
+    "boiler": "Caldera",
+    "@boiler": {
+        "description": "Descripción para boiler"
+    },
+    "level": "Nivel",
+    "@level": {
+        "description": "Descripción para level"
+    },
+    "meteorology": "Meteorología",
+    "@meteorology": {
+        "description": "Descripción para meteorology"
+    },
+    "environmental_sensors": "Sensores ambientales",
+    "@environmental_sensors": {
+        "description": "Descripción para environmental_sensors"
+    },
+    "battery": "Batería",
+    "@battery": {
+        "description": "Descripción para battery"
+    },
+    "switches": "Interruptores",
+    "@switches": {
+        "description": "Descripción para interruptores"
+    },
+    "homeEmptyData": "No hay datos para mostrar",
+    "@homeEmptyData": {
+        "description": ""
+    },
+    "continueButton": "Continuar",
+    "cancelButton": "Cancelar",
+    "welcomme": "¡Bienvenido a la aplicación para tu motorhome! Controla luces y sensores al alcance de tus dedos. Conéctate fácilmente vía Bluetooth. 🚐✨\n",
+    "welcomme2": "Para aprovechar al máximo nuestra aplicación, necesitarás otorgar los permisos de ubicación y localización. Esto garantizará que puedas acceder a todas las funciones increíbles que hemos integrado para mejorar tu viaje. No te preocupes, tus datos estarán seguros y solo se utilizarán para mejorar tu experiencia de usuario.",
+    "welcomme3": "Nos conectaremos a tu motorhome a través de Bluetooth, por lo que necesitarás encenderlo para poder vincularlo con nuestra aplicación. ¡No te preocupes, es muy fácil! Solo necesitas presionar el botón de encendido y listo.",
+    "mqttDescription": "Message Queuing Telemetry Transport es un protocolo de comunicación ligero y eficiente que se utiliza para la transmisión de mensajes entre dispositivos conectados a Internet of Things (IoT) o redes de sensores.",
+    "bluetoothDescription": "Es un estándar de comunicación inalámbrica de corto alcance que permite la transferencia de datos y la conexión de dispositivos electrónicos.",
+    "confirmationTitle": "Confirmación",
+    "confirmationDescription": "Genial, si luego desea cambiarlo puede hacerlo desde la configuración",
+    "findDevices": "Buscar dispositivos",
+    "linkedDevices": "Dispositivos vinculados",
+    "availableDevices": "Dispositivos disponibles",
+    "noDevicesFound": "No se encontraron dispositivos",
+    "searchingDevices": "Buscando dispositivos...",
+    "connectedTo": "Conectado a",
+    "errorConnectingTo": "Error al conectarse a",
+    "deposits": "Depósitos",
+    "depositsDescription": "Aquí puedes modificar las dimensiones de los depósitos (aguas blancas, grises, negras y gasoil) para que la aplicación pueda calcular el nivel de llenado de los mismos.",
+    "setUpDeposits": "Configurar depósitos",
+    "maxHeight": "Altura máxima",
+    "minHeight": "Altura mínima",
+    "volume": "Volumen",
+    "configuration_of_tank_dimensions": "Configuración de las dimensiones de los depositos",
+    "indoor_hum": "Humedad"
+
+
+}

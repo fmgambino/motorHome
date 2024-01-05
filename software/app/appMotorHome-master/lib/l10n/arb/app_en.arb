@@ -1,0 +1,152 @@
+{
+    "@@locale": "en",
+    "counterAppBarTitle": "Counter",
+    "@counterAppBarTitle": {
+        "description": "Text shown in the AppBar of the Counter Page"
+    },
+    "homeAppBarTitle": "Motor home",
+    "@homeAppBarTitle": {
+        "description": "Text shown in the AppBar of the Home Page"
+    },
+    "homeDrawerHeader": "Settings",
+    "@homeDrawerHeader": {
+        "description": "Text displayed in the Drawer of the home page"
+    },
+    "homeDrawerItem1": "Light/dark theme",
+    "@homeDrawerItem1": {
+        "description": "Text displayed in the Drawer of the home page"
+    },
+    "homeDrawerItem2": "Spanish/English language",
+    "@homeDrawerItem2": {
+        "description": "Text displayed in the Drawer of the home page"
+    },
+    "white_water": "White Water",
+    "@white_water": {
+        "description": "Description for white_water"
+    },
+    "gray_water": "Gray Water",
+    "@gray_water": {
+        "description": "Description for gray_water"
+    },
+    "black_water": "Black Water",
+    "@black_water": {
+        "description": "Description for black_water"
+    },
+    "boiler_diesel": "Diesel Boiler",
+    "@boiler_diesel": {
+        "description": "Description for boiler_diesel"
+    },
+    "outdoor_temperature": "Outdoor Temperature",
+    "@outdoor_temperature": {
+        "description": "Description for outdoor_temperature"
+    },
+    "indoor_temperature": "Indoor Temperature",
+    "@indoor_temperature": {
+        "description": "Description for indoor_temperature"
+    },
+    "refrigerator_temperature": "Refrigerator Temperature",
+    "@refrigerator_temperature": {
+        "description": "Description for refrigerator_temperature"
+    },
+    "atmospheric_pressure": "Atmospheric Pressure",
+    "@atmospheric_pressure": {
+        "description": "Description for atmospheric_pressure"
+    },
+    "altitude": "Altitude",
+    "@altitude": {
+        "description": "Description for altitude"
+    },
+    "ppm": "PPM",
+    "@ppm": {
+        "description": "Description for ppm"
+    },
+    "butane": "Butane",
+    "@butane": {
+        "description": "Description for butane"
+    },
+    "propane": "Propane",
+    "@propane": {
+        "description": "Description for propane"
+    },
+    "methane": "Methane",
+    "@methane": {
+        "description": "Description for methane"
+    },
+    "alcohol": "Alcohol",
+    "@alcohol": {
+        "description": "Description for alcohol"
+    },
+    "hall": "Hall",
+    "@hall": {
+        "description": "Description for hall"
+    },
+    "starter": "Starter",
+    "@starter": {
+        "description": "Description for starter"
+    },
+    "bomb": "Bomb",
+    "@bomb": {
+        "description": "Description for bomb"
+    },
+    "refrigerator": "Refrigerator",
+    "@refrigerator": {
+        "description": "Description for refrigerator"
+    },
+    "lights": "Lights",
+    "@lights": {
+        "description": "Description for lights"
+    },
+    "boiler": "Boiler",
+    "@boiler": {
+        "description": "Description for boiler"
+    },
+    "level": "Level",
+    "@level": {
+        "description": "Description for level"
+    },
+    "meteorology": "Meteorology",
+    "@meteorology": {
+        "description": "Description for meteorology"
+    },
+    "environmental_sensors": "Environmental Sensors",
+    "@environmental_sensors": {
+        "description": "Description for environmental_sensors"
+    },
+    "battery": "Battery",
+    "@battery": {
+        "description": "Description for battery"
+    },
+    "switches": "Switches",
+    "@switches": {
+        "description": "Description for switches"
+    },
+    "homeEmptyData": "No data to display",
+    "@homeEmptyData": {
+        "description": ""
+    },
+    "continueButton": "Continue",
+    "cancelButton": "Cancel",
+    "welcomme": "Welcome to the application for your motorhome! Control lights and sensors at your fingertips. Easily connect via Bluetooth.",
+    "welcomme2": "To continue, please select the protocol of your preference.",
+    "welcomme3": "We will connect to your motorhome via Bluetooth, so you will need to turn it on to be able to pair it with our app. Do not worry, it is very easy! You just need to press the power button and that's it.",
+    "mqttDescription": "Message Queuing Telemetry Transport is a lightweight and efficient communication protocol used for the transmission of messages between devices connected to the Internet of Things (IoT) or sensor networks.",
+    "bluetoothDescription": "It is a short-range wireless communication standard that allows the transfer of data and the connection of electronic devices.",
+    "confirmationTitle": "Confirmation",
+    "confirmationDescription": "Great, if you later want to change it you can do it from the settings.",
+    "findDevices": "Find Devices",
+    "linkedDevices": "Linked devices",
+    "availableDevices": "Available devices",
+    "noDevicesFound": "No devices found",
+    "searchingDevices": "Searching devices...",
+    "connectedTo": "Connected to",
+    "errorConnectingTo": "Error connecting to",
+    "deposits": "Deposits",
+    "depositsDescription": "Here you can modify the dimensions of the tanks (white, gray, black water and diesel) so that the application can calculate their fill level.",
+    "setUpDeposits": "Set up deposits",
+    "maxHeight": "Max height",
+    "minHeight": "Min height",
+    "volume": "Volume",
+    "configuration_of_tank_dimensions": "Configuration of tank dimensions",
+    "indoor_hum": "Humidity"
+
+}

@@ -1,0 +1,1 @@
+export 'device_with_availability_model.dart';
