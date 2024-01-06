@@ -10,17 +10,10 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-/* #include <Adafruit_BMP280.h>
+#include <Adafruit_BMP280.h>
+#define SEALEVELPRESSURE_HPA (1013.25) // Presión al nivel del mar en hPa
 
-
-
-#define BMP_SCK  (13)
-#define BMP_MISO (12)
-#define BMP_MOSI (11)
-#define BMP_CS   (10)
-
-Adafruit_BMP280 bmp; // I2C
-*/
+Adafruit_BMP280 bmp; // Objeto BMP280
 
 std::vector<String> actuators = {
     "bomb",
@@ -45,6 +38,10 @@ const int bmp280SCL = 22;
 const int MQ2Pin = 34;
 const int ultaSonicoTRIG[3] = {25, 27, 12};
 const int ultaSonicoECHO[3] = {26, 14, 13};
+int distances_cm[3];  // Array para almacenar las distancias medidas por cada sensor
+
+// Declaración de la función medirDistancia
+void medirDistancia(int trigPin, int echoPin, int index);
 
 // Definiciones de Pines Actuadores
 const int buzzer = 5;
@@ -71,6 +68,12 @@ NewPing sonar[3] = {
   NewPing(ultaSonicoTRIG[1], ultaSonicoECHO[1]),
   NewPing(ultaSonicoTRIG[2], ultaSonicoECHO[2])
 };
+
+  bool buzzerActivated = false;
+  unsigned long lastBuzzerTime = 0;
+  const int buzzerDuration = 500;  // Duración del pitido en milisegundos
+  const int buzzerInterval = 30 * 60 * 1000;  // Intervalo entre pitidos en milisegundos (30 minutos)
+
 
 // JsonObject *obj[MAX_SENSORS];
 int objIndices[MAX_SENSORS];
@@ -138,6 +141,11 @@ void setup()
   SerialBT.begin(chipID); // Inicia el Bluetooth
   Serial.println(chipID); // Imprime la cadena
 
+  if (!bmp.begin()) {
+    Serial.println("No se pudo encontrar el sensor BMP280. Conéctalo correctamente o revisa la dirección I2C.");
+    while (1);
+  }
+
   dht.begin();
   tempRefri.begin(); // Iniciar el sensor
 //Declarando Actuadores como Salidas digitales
@@ -147,6 +155,10 @@ void setup()
   pinMode(mosfetQ2, OUTPUT);
   pinMode(mosfetQ3, OUTPUT);
 
+  for (int i = 0; i < 3; i++) {
+    pinMode(ultaSonicoTRIG[i], OUTPUT);
+    pinMode(ultaSonicoECHO[i], INPUT);
+  }
  
   for (int i = 0; i < MAX_SENSORS; i++)
   {
@@ -220,9 +232,16 @@ void loop()
         obj["enabled"] = false;
       }
     }
-Serial.print("DATO ACTUADOR RECIBIDO: ");
-Serial.println(receivedData);
-delay(2000);
+    Serial.print("DATO ACTUADOR RECIBIDO: ");
+    Serial.println(receivedData);
+    delay(2000);
+
+    for (int i = 0; i < 3; i++) {
+      medirDistancia(ultaSonicoTRIG[i], ultaSonicoECHO[i], i);
+    }
+
+
+  delay(100);
 
 
     if(isActuator(receivedData)){
@@ -336,30 +355,37 @@ delay(2000);
       // Calculamos el promedio
       ppm = (ppm / 100);
 
-     if (obj["sensor"] == "white_water")
-    {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
-       obj["unit"] = "L";
+    // Asignar valores a los sensores basados en las distancias medidas
+    if (obj["sensor"] == "white_water") {
+    // Asignar valor real basado en la distancia medida por el primer sensor ultrasónico
+    obj["valor"] = map(distances_cm[0], 0, 100, 0, 1000);  // Ajusta el mapeo según tus necesidades
+    obj["unit"] = "CM";
+
+    // Verificar el temporizador del buzzer
+     if (buzzerActivated && millis() - lastBuzzerTime >= buzzerInterval) {
+      tone(buzzer, 1000, buzzerDuration);  // Generar un tono de 1000 Hz durante 500 ms
+      lastBuzzerTime = millis();  // Reiniciar el temporizador del buzzer
     }
-    else if (obj["sensor"] == "gray_water")
-    {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
-       obj["unit"] = "L";
-    }
-    else if (obj["sensor"] == "black_water")
-    {
-       obj["valor"] = 1; // aqui pone el valor real del sensor
-       obj["unit"] = "L";
+
+
+    } else if (obj["sensor"] == "gray_water") {
+    // Asignar valor real basado en la distancia medida por el segundo sensor ultrasónico
+    obj["valor"] = map(distances_cm[1], 0, 100, 0, 1000);  // Ajusta el mapeo según tus necesidades
+    obj["unit"] = "CM";
+    } else if (obj["sensor"] == "black_water") {
+    // Asignar valor real basado en la distancia medida por el tercer sensor ultrasónico
+    obj["valor"] = map(distances_cm[2], 0, 100, 0, 1000);  // Ajusta el mapeo según tus necesidades
+    obj["unit"] = "CM";
     }
     else if (obj["sensor"] == "boiler_diesel")
     {
        obj["valor"] = 1; // aqui pone el valor real del sensor
-       obj["unit"] = "L";
+       obj["unit"] = "CM";
     }
     else if (obj["sensor"] == "outdoor_temperature")
     {
        obj["valor"] = 1; // aqui pone el valor real del sensor
-       obj["unit"] = "C";
+       obj["unit"] = "CM";
     }
     else if (obj["sensor"] == "indoor_temperature")
     {  
@@ -379,13 +405,14 @@ delay(2000);
     }
     else if (obj["sensor"] == "atmospheric_pressure")
     {
-        obj["valor"] = 1; // aqui pone el valor real del sensor
+      int presionAtm = bmp.readPressure() / 100.0F; // En hPa
+       obj["valor"] = presionAtm; // aqui pone el valor real del sensor
        obj["unit"] = "hPa";
       
     }
     else if (obj["sensor"] == "altitude")
     {
-      int altitud =  23;
+      int altitud = bmp.readAltitude(SEALEVELPRESSURE_HPA); //Recuerda ajustar SEALEVELPRESSURE_HPA según la presión al nivel del mar en tu ubicación específica.
        obj["valor"] = altitud; // aqui pone el valor real del sensor
        obj["unit"] = "msnm";
     }
@@ -399,24 +426,48 @@ delay(2000);
        butano = ppm * (0.2);
        obj["valor"] = butano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
+        if (ppm > 500) {
+      // Activar el buzzer para emitir pitidos con una frecuencia de 500 ms
+       tone(buzzer, 1000); // 1000 Hz de frecuencia
+        delay(500); // Mantener el sonido durante 500 ms
+        noTone(buzzer); // Apagar el buzzer
+      }
     }
     else if (obj["sensor"] == "propane")
     {
        propano = ppm * (0.3);
        obj["valor"] = propano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
+               if (ppm > 500) {
+      // Activar el buzzer para emitir pitidos con una frecuencia de 500 ms
+       tone(buzzer, 1000); // 1000 Hz de frecuencia
+        delay(500); // Mantener el sonido durante 500 ms
+        noTone(buzzer); // Apagar el buzzer
+      }
     }
     else if (obj["sensor"] == "methane")
     {
        metano = ppm * (0.4);
        obj["valor"] = metano; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
+               if (ppm > 500) {
+      // Activar el buzzer para emitir pitidos con una frecuencia de 500 ms
+       tone(buzzer, 1000); // 1000 Hz de frecuencia
+        delay(500); // Mantener el sonido durante 500 ms
+        noTone(buzzer); // Apagar el buzzer
+      }
     }
     else if (obj["sensor"] == "alcohol")
     {
        alcohol = ppm * (0.10);
        obj["valor"] = alcohol; // aqui pone el valor real del sensor
        obj["unit"] = "ppm";
+               if (ppm > 500) {
+      // Activar el buzzer para emitir pitidos con una frecuencia de 500 ms
+       tone(buzzer, 1000); // 1000 Hz de frecuencia
+        delay(500); // Mantener el sonido durante 500 ms
+        noTone(buzzer); // Apagar el buzzer
+      }
     } else if (obj["sensor"] == "hall")
     {
        obj["valor"] = 1; // aqui pone el valor real del sensor
@@ -492,3 +543,36 @@ void fHardReset()
     i = 0;
   }
 } */
+
+
+//FUNCION PARA MEDICIONS DE DISTANCIA SENSORES HC-SR04
+
+void medirDistancia(int trigPin, int echoPin, int index) {
+  long duration, distance_cm;
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  distance_cm = (duration / 2) / 29.1;
+
+  Serial.print("Distancia Sensor ");
+  Serial.print(index + 1);
+  Serial.print(": ");
+  Serial.print(distance_cm);
+  Serial.println(" cm");
+}
+//FUNCION PARA ACTIVACION DEL BUZZER
+
+void activarBuzzer() {
+  buzzerActivated = true;
+  lastBuzzerTime = millis();
+}
+
+void desactivarBuzzer() {
+  buzzerActivated = false;
+  noTone(buzzer);
+}
