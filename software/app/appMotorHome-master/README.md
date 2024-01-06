@@ -1,6 +1,23 @@
 ### ENGLISH
-
 # Motor Home
+
+Apk Android para Tarjeta de Control y Monitoreo IoT basado en una ESP32.
+
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
+
+![MI-iPhone](https://electronicagambino.com/wp-content/uploads/elementor/thumbs/cropped-Electronica-Gambino-e1684335474114-q6losum0uq8caxhait9doqxx83gv53yq2d8g8oiv7o.png)
+
+![version](https://img.shields.io/badge/version-1.0.0-blue.svg?longCache=true&style=flat-square)
+![license](https://img.shields.io/badge/license-MIT-green.svg?longCache=true&style=flat-square)
+![theme](https://img.shields.io/badge/theme-Matrix--Admin-lightgrey.svg?longCache=true&style=flat-square)
+
+
+### Contacto: electronicagambino@gmail.com
+### [Web](https://electronicagambino.com) - ELECTRÓNICA GAMBINO
+
+![Eduino32-Lite](https://i.ibb.co/NjThz31/eduino32-Lite-3-D.png)
+
 
 ## Description
 
